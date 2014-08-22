@@ -258,10 +258,11 @@ class TaskChannel(object):
                 self.server.unfinished_tasks_mutex.acquire()
 
             self.server.unfinished_tasks -= 1
-            task_queue.task_done(self.task,
-                                 status_line=status_line,
-                                 consumer_name=self.server.name,
-                                 consumer_length=self.server.unfinished_tasks)
+            if self.output.startswith('HTTP/1.1 20'):
+                task_queue.task_done(self.task,
+                                    status_line=status_line,
+                                    consumer_name=self.server.name,
+                                    consumer_length=self.server.unfinished_tasks)
 
         finally:
             # Release lock when not the main thread
